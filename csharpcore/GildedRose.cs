@@ -25,7 +25,11 @@ namespace csharpcore
                 {
                     quality = GetBackstagePassesQualityValue(sellIn, quality);
                 }
-                else if(!isSulfuras)
+                else if (name == "Conjured")
+                {
+                    quality -= 2;
+                }
+                else if (!isSulfuras)
                 {
                     quality = sellIn <= 0 ? quality - 2 : --quality;
                 }

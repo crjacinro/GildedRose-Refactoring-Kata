@@ -135,5 +135,18 @@ namespace csharpcore
 
             Assert.Equal(0, items[0].Quality);
         }
+
+        [Fact]
+        public void Conjured_QualityShouldDecrementByTwo()
+        {
+            var items = new List<Item> {
+                new Item { Name = "Conjured", SellIn = 1, Quality = 2 }
+            };
+
+            GildedRose app = new GildedRose(items);
+            app.UpdateQuality();
+
+            Assert.Equal(0, items[0].Quality);
+        }
     }
 }
