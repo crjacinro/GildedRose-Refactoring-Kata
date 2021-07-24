@@ -1,86 +1,60 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace csharpcore
 {
     public class GildedRose
     {
-        IList<Item> Items;
+        private IList<Item> Items;
         public GildedRose(IList<Item> Items) => this.Items = Items;
 
         public void UpdateQuality()
         {
             for (var i = 0; i < Items.Count; i++)
             {
-                if (Items[i].Name != "Aged Brie" && Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
+                var quality = Items[i].Quality;
+                var sellIn = Items[i].SellIn;
+                var name = Items[i].Name;
+                var isSulfuras = name == "Sulfuras, Hand of Ragnaros";
+
+                if (name == "Aged Brie")
                 {
-                    if (Items[i].Quality > 0)
-                    {
-                        if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-                        {
-                            Items[i].Quality = Items[i].Quality - 1;
-                        }
-                    }
+                    quality++;
                 }
-                else
+                else if (name == "Backstage passes to a TAFKAL80ETC concert")
                 {
-                    if (Items[i].Quality < 50)
-                    {
-                        Items[i].Quality = Items[i].Quality + 1;
-
-                        if (Items[i].Name == "Backstage passes to a TAFKAL80ETC concert")
-                        {
-                            if (Items[i].SellIn < 11)
-                            {
-                                if (Items[i].Quality < 50)
-                                {
-                                    Items[i].Quality = Items[i].Quality + 1;
-                                }
-                            }
-
-                            if (Items[i].SellIn < 6)
-                            {
-                                if (Items[i].Quality < 50)
-                                {
-                                    Items[i].Quality = Items[i].Quality + 1;
-                                }
-                            }
-                        }
-                    }
+                    quality = GetBackstagePassesQualityValue(sellIn, quality);
+                }
+                else if(!isSulfuras)
+                {
+                    quality = sellIn <= 0 ? quality - 2 : --quality;
                 }
 
-                if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-                {
-                    Items[i].SellIn = Items[i].SellIn - 1;
-                }
-
-                if (Items[i].SellIn < 0)
-                {
-                    if (Items[i].Name != "Aged Brie")
-                    {
-                        if (Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
-                        {
-                            if (Items[i].Quality > 0)
-                            {
-                                if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-                                {
-                                    Items[i].Quality = Items[i].Quality - 1;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Items[i].Quality = Items[i].Quality - Items[i].Quality;
-                        }
-                    }
-                    else
-                    {
-                        if (Items[i].Quality < 50)
-                        {
-                            Items[i].Quality = Items[i].Quality + 1;
-                        }
-                    }
-                }
+                Items[i].Quality = GetCorrectQualityValue(quality);
+                Items[i].SellIn = isSulfuras ? sellIn : sellIn - 1;
             }
+        }
+
+        private int GetCorrectQualityValue(int quality)
+        {
+            if (quality < 0)
+                return 0;
+            if (quality > 50)
+                return 50;
+
+            return quality;
+        }
+
+        private int GetBackstagePassesQualityValue(int sellIn, int quality)
+        {
+            if (sellIn <= 0)
+                return 0;
+            else if (sellIn <= 5)
+                return (quality += 3);
+            else if (sellIn <= 10)
+                return (quality += 2);
+            else
+                return ++quality;
         }
     }
 }
