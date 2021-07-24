@@ -10,7 +10,6 @@ namespace csharpcore
     [UseReporter(typeof(DiffReporter))]
     public class ApprovalTest
     {
-        [Fact]
         public void ThirtyDays()
         {
             var fakeoutput = new StringBuilder();
